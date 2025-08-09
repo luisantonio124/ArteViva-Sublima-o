@@ -1,0 +1,36 @@
+{
+  "name": "arteviva-sublimacao",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prisma:seed": "ts-node prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.13.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "lucide-react": "^0.338.0",
+    "next": "14.2.3",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwind-merge": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/react": "^18.2.21",
+    "@types/react-dom": "^18.2.7",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "prisma": "^5.13.0",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.1",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.2.3"
+  }
+}
