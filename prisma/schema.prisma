@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String      @id @default(cuid())
+  email        String      @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  carts        Cart[]
+  orders       Order[]
+  reviews      Review[]
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  products Product[]
+}
+
+model Product {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal      @db.Decimal(10, 2)
+  imageUrl    String?
+  category    Category     @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  variations  Variation[]
+  reviews     Review[]
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+}
+
+model Variation {
+  id        String  @id @default(cuid())
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  name      String
+  value     String
+  cartItems CartItem[]
+  orderItems OrderItem[]
+}
+
+model Cart {
+  id        String    @id @default(cuid())
+  user      User?     @relation(fields: [userId], references: [id])
+  userId    String?
+  items     CartItem[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model CartItem {
+  id           String       @id @default(cuid())
+  cart         Cart         @relation(fields: [cartId], references: [id])
+  cartId       String
+  product      Product      @relation(fields: [productId], references: [id])
+  productId    String
+  quantity     Int          @default(1)
+  variation    Variation?   @relation(fields: [variationId], references: [id])
+  variationId  String?
+  customizations Customization[]
+}
+
+model Customization {
+  id          String     @id @default(cuid())
+  cartItem    CartItem?  @relation(fields: [cartItemId], references: [id])
+  cartItemId  String?
+  orderItem   OrderItem? @relation(fields: [orderItemId], references: [id])
+  orderItemId String?
+  text        String?
+  imageUrl    String?
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  user      User        @relation(fields: [userId], references: [id])
+  userId    String
+  items     OrderItem[]
+  total     Decimal     @db.Decimal(10, 2)
+  createdAt DateTime    @default(now())
+  coupon    Coupon?     @relation(fields: [couponId], references: [id])
+  couponId  String?
+}
+
+model OrderItem {
+  id          String       @id @default(cuid())
+  order       Order        @relation(fields: [orderId], references: [id])
+  orderId     String
+  product     Product      @relation(fields: [productId], references: [id])
+  productId   String
+  quantity    Int
+  price       Decimal      @db.Decimal(10, 2)
+  variation   Variation?   @relation(fields: [variationId], references: [id])
+  variationId String?
+  customizations Customization[]
+}
+
+model Coupon {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  discount  Int
+  expiresAt DateTime?
+  orders    Order[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+}
